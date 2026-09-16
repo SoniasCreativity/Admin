@@ -71,7 +71,9 @@ function renderWorkstreams() {
     if (info) { info.querySelector('strong').textContent = workstream.name; info.querySelector('small').textContent = `${workstream.owner} · ${workstream.deliverables} deliverables`; }
     if (tag) { tag.textContent = workstream.health; tag.className = `tag ${workstream.status}`; }
     stream.querySelector('[data-edit-workstream]')?.remove();
-    stream.appendChild(button('Edit', () => editWorkstream(workstream)));
+    const editButton = button('Edit', () => editWorkstream(workstream));
+    editButton.dataset.editWorkstream = 'true';
+    stream.appendChild(editButton);
   });
 }
 
@@ -89,7 +91,9 @@ function renderRaidItems() {
     const cell = cells[index]; if (!cell) return;
     const count = cell.querySelector('strong, .raid-count'); if (count) count.textContent = item.count;
     cell.querySelector('[data-edit-raid]')?.remove();
-    cell.appendChild(button('Edit', () => editRaidItem(item)));
+    const editButton = button('Edit', () => editRaidItem(item));
+    editButton.dataset.editRaid = 'true';
+    cell.appendChild(editButton);
   });
 }
 
