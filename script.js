@@ -1,4 +1,6 @@
-const programData = {
+const STORAGE_KEY = 'program-ops-command-center';
+
+const defaultProgramData = {
   program: {
     name: 'Product launch',
     health: 'On track',
@@ -18,9 +20,9 @@ const programData = {
     { name: 'Public launch', date: 'Oct 15', status: 'Upcoming' },
   ],
   actionItems: [
-    { title: 'Finalize launch messaging', owner: 'Jamie Lee', dueDate: '2026-09-18', status: 'Open', priority: 'High' },
-    { title: 'Confirm support coverage', owner: 'Priya Shah', dueDate: '2026-09-21', status: 'Open', priority: 'Medium' },
-    { title: 'Complete security review', owner: 'Chris Wong', dueDate: '2026-09-23', status: 'Open', priority: 'High' },
+    { id: 'action-1', title: 'Finalize launch messaging', owner: 'Jamie Lee', dueDate: '2026-09-18', status: 'Open', priority: 'High' },
+    { id: 'action-2', title: 'Confirm support coverage', owner: 'Priya Shah', dueDate: '2026-09-21', status: 'Open', priority: 'Medium' },
+    { id: 'action-3', title: 'Complete security review', owner: 'Chris Wong', dueDate: '2026-09-23', status: 'Open', priority: 'High' },
   ],
   raidItems: [
     { type: 'Risks', count: 2 },
@@ -30,6 +32,21 @@ const programData = {
   ],
   activity: [],
 };
+
+function loadProgramData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? { ...defaultProgramData, ...JSON.parse(saved) } : structuredClone(defaultProgramData);
+  } catch (error) {
+    return structuredClone(defaultProgramData);
+  }
+}
+
+let programData = loadProgramData();
+
+function saveProgramData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(programData));
+}
 
 function getOpenActionCount() {
   return programData.actionItems.filter(item => item.status !== 'Complete').length;
@@ -76,9 +93,84 @@ function renderWorkstreams() {
   });
 }
 
+function createActionElement(action) {
+  const item = document.createElement('article');
+  item.className = 'action-item';
+  item.dataset.actionId = action.id;
+  item.style.cssText = 'display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 0;border-top:1px solid var(--line);';
+
+  const details = document.createElement('div');
+  const title = document.createElement('strong');
+  title.textContent = action.title;
+  if (action.status === 'Complete') title.style.textDecoration = 'line-through';
+  const meta = document.createElement('small');
+  meta.style.display = 'block';
+  meta.style.color = 'var(--muted)';
+  meta.textContent = `${action.owner} · Due ${action.dueDate} · ${action.priority}`;
+  details.append(title, meta);
+
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'text-button';
+  toggle.textContent = action.status === 'Complete' ? 'Reopen' : 'Complete';
+  toggle.addEventListener('click', () => {
+    action.status = action.status === 'Complete' ? 'Open' : 'Complete';
+    saveProgramData();
+    renderDashboard();
+  });
+
+  item.append(details, toggle);
+  return item;
+}
+
+function renderActionItems() {
+  const panel = document.querySelector('#actions');
+  if (!panel) return;
+  let manager = panel.querySelector('.action-manager');
+  if (!manager) {
+    manager = document.createElement('div');
+    manager.className = 'action-manager';
+    manager.style.marginTop = '18px';
+    panel.appendChild(manager);
+  }
+  manager.replaceChildren();
+
+  const heading = document.createElement('div');
+  heading.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px;';
+  const label = document.createElement('strong');
+  label.textContent = 'Action items';
+  const addButton = document.createElement('button');
+  addButton.type = 'button';
+  addButton.className = 'text-button';
+  addButton.textContent = 'Add action +';
+  addButton.addEventListener('click', addActionItem);
+  heading.append(label, addButton);
+  manager.appendChild(heading);
+
+  programData.actionItems.forEach(action => manager.appendChild(createActionElement(action)));
+}
+
+function addActionItem() {
+  const title = window.prompt('Action title');
+  if (!title || !title.trim()) return;
+  const owner = window.prompt('Owner', 'Unassigned') || 'Unassigned';
+  const dueDate = window.prompt('Due date (YYYY-MM-DD)', new Date().toISOString().split('T')[0]);
+  programData.actionItems.push({
+    id: `action-${Date.now()}`,
+    title: title.trim(),
+    owner: owner.trim(),
+    dueDate: dueDate || 'TBD',
+    status: 'Open',
+    priority: 'Medium',
+  });
+  saveProgramData();
+  renderDashboard();
+}
+
 function renderDashboard() {
   renderProgramMetrics();
   renderWorkstreams();
+  renderActionItems();
 }
 
 const dateInput = document.getElementById('email-date');
