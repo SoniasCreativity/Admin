@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Program Operations Command Center — a portfolio-ready dashboard for coordinating cross-functional programs." />
+  <title>Program Operations Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">✦</span><span>Program Ops</span></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span>▦</span> Overview</a>
+        <a class="nav-item" href="#workstreams"><span>◈</span> Workstreams</a>
+        <a class="nav-item" href="#actions"><span>✓</span> Action items</a>
+        <a class="nav-item" href="#risks"><span>△</span> RAID log</a>
+        <a class="nav-item" href="#email-creator"><span>✉</span> Follow-up creator</a>
+      </nav>
+      <div class="sidebar-footer"><div class="avatar">SC</div><div><strong>SoniasCreativity</strong><small>Program workspace</small></div></div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar"><div class="breadcrumb">PROGRAMS <span>/</span> PRODUCT LAUNCH</div><button class="icon-button" aria-label="Notifications">♢</button></header>
+      <section class="hero"><div><p class="eyebrow">THURSDAY, SEPTEMBER 17, 2026</p><h1>Program Operations<br /><em>Command Center</em></h1><p class="hero-copy">A single source of truth for keeping cross-functional programs aligned, visible, and moving forward.</p></div><button class="primary-button" onclick="document.getElementById('email-creator').scrollIntoView({behavior:'smooth'})">＋ Create follow-up</button></section>
+
+      <section class="metrics" aria-label="Program metrics">
+        <article class="metric-card"><span class="metric-label">PROGRAM HEALTH</span><strong class="metric-value health">On track <span>↗</span></strong><small>Updated today</small></article>
+        <article class="metric-card"><span class="metric-label">ACTIVE WORKSTREAMS</span><strong class="metric-value">06</strong><small><b class="positive">+1</b> this month</small></article>
+        <article class="metric-card"><span class="metric-label">OPEN ACTIONS</span><strong class="metric-value">18</strong><small><b class="warning">04</b> due this week</small></article>
+        <article class="metric-card"><span class="metric-label">LAUNCH READINESS</span><strong class="metric-value">72%</strong><div class="progress"><span style="width:72%"></span></div></article>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel workstreams" id="workstreams"><div class="panel-heading"><div><p class="eyebrow">EXECUTION</p><h2>Workstream health</h2></div><button class="text-button">View all ↗</button></div><div class="stream-list">
+          <div class="stream"><span class="status-dot green"></span><div class="stream-info"><strong>Product &amp; engineering</strong><small>Alex Morgan · 8 deliverables</small></div><span class="tag on-track">On track</span><span class="stream-date">Sep 28</span></div>
+          <div class="stream"><span class="status-dot amber"></span><div class="stream-info"><strong>Go-to-market readiness</strong><small>Jamie Lee · 12 deliverables</small></div><span class="tag at-risk">At risk</span><span class="stream-date">Oct 04</span></div>
+          <div class="stream"><span class="status-dot green"></span><div class="stream-info"><strong>Customer enablement</strong><small>Priya Shah · 6 deliverables</small></div><span class="tag on-track">On track</span><span class="stream-date">Oct 08</span></div>
+          <div class="stream"><span class="status-dot gray"></span><div class="stream-info"><strong>Legal &amp; compliance</strong><small>Chris Wong · 4 deliverables</small></div><span class="tag not-started">Not started</span><span class="stream-date">Oct 12</span></div>
+        </div></section>
+
+        <section class="panel timeline" id="actions"><div class="panel-heading"><div><p class="eyebrow">MILESTONES</p><h2>Launch timeline</h2></div><button class="text-button">Manage ↗</button></div><div class="timeline-track"><div class="timeline-line"></div><div class="milestone complete"><span class="milestone-dot">✓</span><div><strong>Discovery complete</strong><small>Aug 22, 2026</small></div></div><div class="milestone complete"><span class="milestone-dot">✓</span><div><strong>Beta readiness review</strong><small>Sep 15, 2026</small></div></div><div class="milestone current"><span class="milestone-dot">3</span><div><strong>Launch readiness review</strong><small>Sep 28, 2026</small></div></div><div class="milestone upcoming"><span class="milestone-dot">4</span><div><strong>Public launch</strong><small>Oct 12, 2026</small></div></div></div></section>
+
+        <section class="panel raid" id="risks"><div class="panel-heading"><div><p class="eyebrow">VISIBILITY</p><h2>RAID snapshot</h2></div><button class="text-button">Open log ↗</button></div><div class="raid-grid"><div><strong class="raid-number danger">03</strong><span>Risks</span></div><div><strong class="raid-number warning-text">05</strong><span>Dependencies</span></div><div><strong class="raid-number">02</strong><span>Issues</span></div><div><strong class="raid-number">07</strong><span>Decisions</span></div></div><div class="callout"><span>!</span><div><strong>2 items need attention</strong><small>Review the launch timeline and vendor contract before Friday.</small></div></div></section>
+
+        <section class="panel activity"><div class="panel-heading"><div><p class="eyebrow">COLLABORATION</p><h2>Recent activity</h2></div><button class="text-button">See history ↗</button></div><div class="activity-list"><div class="activity-item"><div class="avatar small-avatar purple">JM</div><div><strong>Jamie Lee updated a risk</strong><small>Go-to-market readiness · 24 min ago</small></div></div><div class="activity-item"><div class="avatar small-avatar orange">PS</div><div><strong>Priya Shah completed an action</strong><small>Customer enablement · 2 hrs ago</small></div></div><div class="activity-item"><div class="avatar small-avatar blue">AM</div><div><strong>Alex Morgan added a decision</strong><small>Product &amp; engineering · Yesterday</small></div></div></div></section>
+      </div>
+
+      <section class="panel email-panel" id="email-creator"><div class="panel-heading"><div><p class="eyebrow">COMMUNICATIONS</p><h2>Follow-up email creator</h2><p class="panel-description">Turn meeting notes into a clear, accountable next step.</p></div><span class="feature-badge">PORTFOLIO FEATURE</span></div><div class="email-layout"><form id="email-form" class="email-form"><div class="form-row"><label>DATE<input id="email-date" type="date" required /></label><label>SALUTATION<select id="salutation"><option>Hello</option><option>Hi</option><option>Dear</option><option>Good morning</option><option>Good afternoon</option></select></label></div><div class="form-row"><label>RECIPIENT NAME<input id="recipient" type="text" placeholder="e.g. Alex and team" /></label><label>YOUR NAME<input id="sender" type="text" placeholder="e.g. Sonia" /></label></div><label>NOTES OR SUMMARY<textarea id="notes" rows="4" placeholder="Paste meeting notes or summarize what was discussed..."></textarea></label><div class="form-row"><label>KEY FOLLOW-UP POINTS<textarea id="followups" rows="3" placeholder="One point per line"></textarea></label><label>RESPONSIBLE PERSON / OWNER<textarea id="owners" rows="3" placeholder="One owner per line"></textarea></label></div><label>CLOSING STATEMENT<input id="closing" type="text" value="Please let me know if I missed anything." /></label><button class="primary-button generate-button" type="submit">Generate follow-up email&nbsp; →</button></form><div class="output-card"><div class="output-header"><div><span class="eyebrow">PREVIEW</span><h3>Your email draft</h3></div><button id="copy-button" class="copy-button" type="button">Copy text</button></div><div id="email-output" class="email-output"><p class="empty-state">Complete the fields and select <strong>Generate follow-up email</strong> to create a polished draft.</p></div></div></div></section>
+      <footer>PROGRAM OPERATIONS COMMAND CENTER <span>•</span> A portfolio demonstration by SoniasCreativity</footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
