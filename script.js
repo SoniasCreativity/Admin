@@ -8,9 +8,9 @@ const defaultProgramData = {
     { name: 'Legal & compliance', owner: 'Chris Wong', deliverables: 4, health: 'Not started', status: 'gray' },
   ],
   milestones: [
-    { name: 'Internal beta', date: 'Sep 24', status: 'Complete' },
-    { name: 'Launch readiness review', date: 'Oct 01', status: 'In progress' },
-    { name: 'Public launch', date: 'Oct 15', status: 'Upcoming' },
+    { id: 'milestone-1', name: 'Internal beta', date: '2026-09-24', status: 'Complete' },
+    { id: 'milestone-2', name: 'Launch readiness review', date: '2026-10-01', status: 'In progress' },
+    { id: 'milestone-3', name: 'Public launch', date: '2026-10-15', status: 'Upcoming' },
   ],
   actionItems: [
     { id: 'action-1', title: 'Finalize launch messaging', owner: 'Jamie Lee', workstream: 'Go-to-market readiness', dueDate: '2026-09-18', status: 'Open', priority: 'High' },
@@ -19,8 +19,10 @@ const defaultProgramData = {
     { id: 'action-4', title: 'Validate launch checklist', owner: 'Alex Morgan', workstream: 'Product & engineering', dueDate: '2026-09-27', status: 'Complete', priority: 'High' },
   ],
   raidItems: [
-    { type: 'Risks', count: 2 }, { type: 'Assumptions', count: 4 },
-    { type: 'Issues', count: 1 }, { type: 'Dependencies', count: 3 },
+    { id: 'raid-1', type: 'Risks', count: 2, owner: 'Jamie Lee', description: 'Messaging may shift with final product scope.' },
+    { id: 'raid-2', type: 'Assumptions', count: 4, owner: 'Alex Morgan', description: 'Customer usage patterns hold steady through launch.' },
+    { id: 'raid-3', type: 'Issues', count: 1, owner: 'Chris Wong', description: 'Regulatory feedback still pending.' },
+    { id: 'raid-4', type: 'Dependencies', count: 3, owner: 'Priya Shah', description: 'Support staffing and enablement materials depend on final launch approval.' },
   ],
   activity: [],
 };
@@ -50,7 +52,7 @@ function saveProgramData() {
 }
 
 function getOpenActionCount() {
-  return programData.actionItems.filter(item => item.status !== 'Complete').length;
+  return programData.actionItems.filter((item) => item.status !== 'Complete').length;
 }
 
 function button(label, handler) {
@@ -138,11 +140,16 @@ function renderWorkstreams() {
 }
 
 function editRaidItem(item) {
-  const value = window.prompt(`Count for ${item.type}`, String(item.count));
-  const count = Number(value);
-  if (value === null || !Number.isInteger(count) || count < 0) return;
+  const nextCount = window.prompt(`Count for ${item.type}`, String(item.count));
+  const count = Number(nextCount);
+  if (nextCount === null || !Number.isInteger(count) || count < 0) return;
 
   item.count = count;
+  const nextOwner = window.prompt('Owner', item.owner || '');
+  if (nextOwner !== null) item.owner = nextOwner.trim() || item.owner;
+  const nextDescription = window.prompt('Description', item.description || '');
+  if (nextDescription !== null) item.description = nextDescription.trim() || item.description;
+
   saveProgramData();
   renderDashboard();
 }
@@ -168,6 +175,28 @@ function renderRaidItems() {
     editButton.dataset.editRaid = 'true';
     cell.appendChild(editButton);
   });
+}
+
+function addRaidItem() {
+  const type = window.prompt('RAID type (Risk, Assumption, Issue, Dependency)', 'Risk');
+  if (!type || !type.trim()) return;
+
+  const count = Number(window.prompt('Count', '1'));
+  if (!Number.isInteger(count) || count < 0) return;
+
+  const owner = window.prompt('Owner', 'Unassigned') || 'Unassigned';
+  const description = window.prompt('Description', 'New item added.') || 'New item added.';
+
+  programData.raidItems.push({
+    id: `raid-${Date.now()}`,
+    type: type.trim(),
+    count,
+    owner: owner.trim(),
+    description: description.trim(),
+  });
+
+  saveProgramData();
+  renderDashboard();
 }
 
 function renderFilterControls() {
@@ -245,6 +274,100 @@ function renderFilterControls() {
   resetButton.style.cssText = 'align-self:end;height:42px;';
 
   filterBar.append(workstreamSelect, ownerSelect, healthSelect, dueDateWrap, resetButton);
+}
+
+function renderMilestones() {
+  const panel = document.querySelector('#actions');
+  if (!panel) return;
+
+  let track = panel.querySelector('.timeline-track');
+  if (!track) {
+    track = document.createElement('div');
+    track.className = 'timeline-track';
+    panel.appendChild(track);
+  }
+
+  track.innerHTML = '';
+
+  const line = document.createElement('div');
+  line.className = 'timeline-line';
+  track.appendChild(line);
+
+  programData.milestones.forEach((milestone) => {
+    const item = document.createElement('div');
+    item.className = 'milestone';
+    item.style.cssText = 'position:relative;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;';
+
+    const left = document.createElement('div');
+    left.style.cssText = 'display:flex;align-items:center;gap:10px;';
+
+    const dot = document.createElement('span');
+    dot.className = 'status-dot green';
+    dot.style.cssText = 'width:10px;height:10px;display:inline-block;border-radius:50%;background:var(--accent);';
+
+    const text = document.createElement('div');
+    const title = document.createElement('strong');
+    title.textContent = milestone.name;
+    const date = document.createElement('small');
+    date.textContent = milestone.date;
+    text.append(title, date);
+
+    left.append(dot, text);
+
+    const status = document.createElement('span');
+    status.className = 'tag green';
+    status.textContent = milestone.status;
+
+    item.append(left, status);
+    track.appendChild(item);
+  });
+
+  const actionBar = document.createElement('div');
+  actionBar.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:12px;';
+  actionBar.append(
+    button('Add milestone', () => {
+      const name = window.prompt('Milestone name', 'New milestone');
+      if (!name || !name.trim()) return;
+      const date = window.prompt('Milestone date (YYYY-MM-DD)', new Date().toISOString().split('T')[0]);
+      const status = window.prompt('Status', 'Upcoming') || 'Upcoming';
+      programData.milestones.push({
+        id: `milestone-${Date.now()}`,
+        name: name.trim(),
+        date: date || 'TBD',
+        status: status.trim(),
+      });
+      saveProgramData();
+      renderDashboard();
+    })
+  );
+
+  actionBar.append(
+    button('Edit milestone', () => {
+      const name = window.prompt('Milestone name to edit', programData.milestones[0]?.name || '');
+      if (!name || !name.trim()) return;
+      const milestone = programData.milestones.find((item) => item.name.toLowerCase() === name.trim().toLowerCase());
+      if (!milestone) {
+        window.alert('Milestone not found.');
+        return;
+      }
+      const nextName = window.prompt('New milestone name', milestone.name);
+      const nextDate = window.prompt('New date (YYYY-MM-DD)', milestone.date);
+      const nextStatus = window.prompt('New status', milestone.status);
+      milestone.name = nextName && nextName.trim() ? nextName.trim() : milestone.name;
+      milestone.date = nextDate && nextDate.trim() ? nextDate.trim() : milestone.date;
+      milestone.status = nextStatus && nextStatus.trim() ? nextStatus.trim() : milestone.status;
+      saveProgramData();
+      renderDashboard();
+    })
+  );
+
+  actionBar.append(
+    button('Add RAID item', () => {
+      addRaidItem();
+    })
+  );
+
+  panel.appendChild(actionBar);
 }
 
 function createActionElement(action) {
@@ -338,6 +461,7 @@ function renderDashboard() {
   renderWorkstreams();
   renderRaidItems();
   renderFilterControls();
+  renderMilestones();
   renderActionItems();
 }
 
